@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CircularTech - From Waste to Resource</title>
+<style>
+:root{--green:#087f5b;--dark:#064e3b;--light:#e9f8ef;--bg:#f4faf6}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:#173b2e}
+header{background:var(--dark);color:white;padding:18px 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.logo{font-size:23px;font-weight:bold}
+.logo span{color:#a7f3d0}
+nav{display:flex;gap:7px;flex-wrap:wrap}
+button{cursor:pointer;border:0;border-radius:8px;padding:11px 15px;font-weight:bold}
+nav button{background:#11664e;color:white}
+nav button:hover,nav button.active{background:#34d399;color:#063b2c}
+main{max-width:1100px;margin:auto;padding:22px}
+.page{display:none}
+.page.active{display:block}
+.hero{background:linear-gradient(120deg,#064e3b,#10a574);color:white;padding:40px 25px;border-radius:18px;text-align:center}
+.hero h1{font-size:36px;margin:10px}
+.hero p{line-height:1.7}
+.primary{background:var(--green);color:white}
+.hero .primary{background:#a7f3d0;color:#064e3b}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:18px 0}
+.card{background:white;border:1px solid #d9eee2;padding:20px;border-radius:14px;box-shadow:0 4px 14px #064e3b0c}
+.card h3{margin-top:5px}
+.icon{font-size:30px}
+.stat{font-size:28px;font-weight:bold;color:var(--green)}
+input,select,textarea{width:100%;padding:12px;margin:8px 0 14px;border:1px solid #cbded2;border-radius:8px;font:inherit;background:white}
+label{font-weight:bold;font-size:14px}
+.result{background:var(--light);padding:15px;border-radius:10px;margin-top:12px;line-height:1.7}
+.badge{background:#d1fae5;color:#065f46;padding:5px 9px;border-radius:20px;font-size:12px}
+footer{text-align:center;padding:25px;background:var(--dark);color:white;margin-top:25px}
+.small{color:#60796c;font-size:13px;line-height:1.6}
+.list-item{border-bottom:1px solid #e0eee5;padding:12px 0}
+#app{display:none}
+.center{max-width:430px;margin:35px auto}
+a{color:var(--green)}
+</style>
+</head>
+<body>
+
+<header>
+ <div class="logo">♻ Circular<span>Tech</span></div>
+ <nav id="navigation" style="display:none">
+  <button onclick="showPage('home',this)" class="active">Home</button>
+  <button onclick="showPage('classify',this)">Classify</button>
+  <button onclick="showPage('ewaste',this)">E-Waste</button>
+  <button onclick="showPage('food',this)">Food Share</button>
+  <button onclick="showPage('reuse',this)">Reuse</button>
+  <button onclick="showPage('impact',this)">Impact</button>
+  <button onclick="logout()">Logout</button>
+ </nav>
+</header>
+
+<!-- LOGIN -->
+<section id="login" class="center card">
+ <h1>🌱 Welcome to EcoLoop</h1>
+ <p>Turn your waste into a useful resource.</p>
+ <form onsubmit="login(event)">
+  <label>Your name</label>
+  <input id="username" placeholder="Enter your name" required>
+  <label>Email address</label>
+  <input id="email" type="email" placeholder="you@example.com" required>
+  <label>Password</label>
+  <input id="password" type="password" minlength="4" placeholder="At least 4 characters" required>
+  <button class="primary" style="width:100%">Login / Create Demo Account</button>
+ </form>
+ <p class="small">Demo login only. This version does not use a secure server or save real passwords.</p>
+</section>
+
+<div id="app">
+<main>
+
+<!-- HOME -->
+<section id="home" class="page active">
+ <div class="hero">
+  <div style="font-size:48px">♻️ 🌍 🌿</div>
+  <h1>From Waste to Resource</h1>
+  <p>Smart waste management for a cleaner, greener and sustainable future.</p>
+  <button class="primary" onclick="showPage('classify')">Start Waste Classification →</button>
+ </div>
+ <div class="grid">
+  <div class="card"><div class="icon">🤖</div><h3>Smart Classification</h3><p>Identify waste categories and learn how to dispose of them.</p><button class="primary" onclick="showPage('classify')">Classify Waste</button></div>
+  <div class="card"><div class="icon">🔋</div><h3>E-Waste Collection</h3><p>Record old electronic items for responsible recycling.</p><button class="primary" onclick="showPage('ewaste')">Submit Request</button></div>
+  <div class="card"><div class="icon">🥗</div><h3>Food Redistribution</h3><p>List surplus food for safe redistribution.</p><button class="primary" onclick="showPage('food')">Share Food</button></div>
+  <div class="card"><div class="icon">🛠️</div><h3>Reuse & Repair</h3><p>Give reusable products a second life.</p><button class="primary" onclick="showPage('reuse')">Explore Items</button></div>
+ </div>
+ <div class="grid">
+  <div class="card"><p>♻️ Waste records</p><div class="stat" id="total">0</div></div>
+  <div class="card"><p>🌱 Eco-points earned</p><div class="stat" id="points">0</div></div>
+  <div class="card"><p>📦 Collection requests</p><div class="stat" id="requests">0</div></div>
+ </div>
+ <div class="card"><h3>Our Mission</h3>
+ <p>Reduce waste, reuse products, recover useful materials and protect our environment.</p>
+ <p class="small">Aligned SDGs: 12 Responsible Consumption, 6 Clean Water, 7 Clean Energy, 9 Innovation, 11 Sustainable Cities, 13 Climate Action, 14 Life Below Water and 15 Life on Land.</p></div>
+</section>
+
+<!-- CLASSIFICATION -->
+<section id="classify" class="page">
+ <h1>🤖 Waste Classification</h1>
+ <div class="card">
+  <p>Enter a waste item's name to get a suggested category and disposal method.</p>
+  <label>Waste item</label>
+  <input id="wasteName" placeholder="Example: plastic bottle, banana peel, old laptop">
+  <button class="primary" onclick="classifyWaste()">Classify Waste</button>
+  <div id="classificationResult" class="result" style="display:none"></div>
+  <hr>
+  <h3>Optional: Select a waste photo</h3>
+  <input type="file" id="wastePhoto" accept="image/*">
+  <img id="photoPreview" alt="Selected waste preview" style="display:none;width:100%;max-height:260px;object-fit:contain;border-radius:10px">
+  <p class="small">The photo preview does not run an AI vision model. The classification demo uses item-name rules.</p>
+ </div>
+ <div class="card"><h3>Waste sorting guide</h3>
+  <p>🟢 Wet/organic waste — food scraps and vegetable peels.</p>
+  <p>🔵 Dry recyclable waste — clean paper, plastic, glass and metal.</p>
+  <p>🔴 Special waste — batteries, electronics, chemicals and hazardous items. Keep separate and use authorized collection services.</p>
+  <p class="small">Follow your local waste collection rules. Not every plastic or paper item is recyclable.</p>
+ </div>
+</section>
+
+<!-- E-WASTE -->
+<section id="ewaste" class="page">
+ <h1>🔋 E-Waste Collection</h1>
+ <div class="card">
+  <p>Register old electronic items for responsible collection.</p>
+  <form onsubmit="addRecord(event,'ewaste')">
+   <label>Item type</label>
+   <select id="electronic" required>
+    <option value="">Select item</option><option>Mobile phone</option>
+    <option>Laptop / Computer</option><option>Battery</option>
+    <option>Charger / Cable</option><option>Television</option>
+    <option>Other electronics</option>
+   </select>
+   <label>Quantity</label><input id="eqty" type="number" min="1" max="100" value="1" required>
+   <label>Area / locality</label><input id="earea" required placeholder="Enter your area">
+   <label>Additional details</label><textarea id="edetails" placeholder="Condition or other details"></textarea>
+   <button class="primary">Register Collection Request</button>
+  </form>
+  <p class="small">This creates a local demo record, not a real pickup booking. Use an authorized e-waste recycler.</p>
+ </div>
+ <div class="card"><h3>Your e-waste records</h3><div id="ewasteList">No requests yet.</div></div>
+</section>
+
+<!-- FOOD SHARE -->
+<section id="food" class="page">
+ <h1>🥗 Food Waste Reduction</h1>
+ <div class="card">
+  <p>List surplus food for safe sharing with community organizations.</p>
+  <form onsubmit="addRecord(event,'food')">
+   <label>Food description</label><input id="foodName" required placeholder="Example: sealed food packets">
+   <label>Quantity / servings</label><input id="foodQty" type="number" min="1" required>
+   <label>Pickup locality</label><input id="foodArea" required>
+   <label>Safe until (date)</label><input id="foodDate" type="date" required>
+   <button class="primary">List Surplus Food</button>
+  </form>
+  <p class="small">Only offer food that has been stored safely. Never redistribute spoiled food. This demo does not verify food safety or arrange actual collection.</p>
+ </div>
+ <div class="card"><h3>Available food listings</h3><div id="foodList">No listings yet.</div></div>
+</section>
+
+<!-- REUSE -->
+<section id="reuse" class="page">
+ <h1>🛠️ Reuse & Repair Marketplace</h1>
+ <div class="card">
+  <p>List items that someone else could reuse, repair or recycle.</p>
+  <form onsubmit="addRecord(event,'reuse')">
+   <label>Item name</label><input id="itemName" required placeholder="Example: study table">
+   <label>Condition</label><select id="condition"><option>Good</option><option>Needs repair</option><option>For parts / recycling</option></select>
+   <label>Offer type</label><select id="offer"><option>Free giveaway</option><option>Exchange</option><option>Repair</option></select>
+   <label>Locality</label><input id="itemArea" required>
+   <button class="primary">Publish Listing</button>
+  </form>
+ </div>
+ <div class="card"><h3>Community listings</h3><div id="reuseList">No listings yet.</div></div>
+</section>
+
+<!-- IMPACT -->
+<section id="impact" class="page">
+ <h1>🌍 Environmental Impact Dashboard</h1>
+ <div class="grid">
+  <div class="card"><p>Records created</p><div class="stat" id="impactTotal">0</div></div>
+  <div class="card"><p>Eco-points</p><div class="stat" id="impactPoints">0</div></div>
+  <div class="card"><p>Reuse opportunities</p><div class="stat" id="impactReuse">0</div></div>
+  <div class="card"><p>Food listings</p><div class="stat" id="impactFood">0</div></div>
+ </div>
+ <div class="card">
+  <h3>How can we help?</h3>
+  <ul>
+   <li>Segregate waste at the source.</li>
+   <li>Reuse and repair products before replacing them.</li>
+   <li>Take batteries and electronics to authorized recyclers.</li>
+   <li>Share safe surplus food to prevent avoidable waste.</li>
+   <li>Reduce single-use products and unnecessary packaging.</li>
+  </ul>
+  <p class="small">Statistics are demo activity counts. They do not represent verified kilograms recycled, money saved or emissions reduced.</p>
+ </div>
+</section>
+
+</main>
+</div>
+
+<footer>♻ CircularTech | From Waste to Resource<br><small>Reduce • Reuse • Repair • Recycle</small></footer>
+
+<script>
+const $ = id => document.getElementById(id);
+
+let data = {user:"",waste:[],ewaste:[],food:[],reuse:[],points:0};
+
+function save(){
+ try { localStorage.setItem("circularTechDemo",JSON.stringify(data)); }
+ catch(e){ console.log("Browser storage unavailable"); }
+ updateDashboard();
+}
+
+function load(){
+ try {
+  const old = localStorage.getItem("circularTechDemo");
+  if(old) data = JSON.parse(old);
+ } catch(e){}
+}
+
+function login(e){
+ e.preventDefault();
+ data.user = $("username").value.trim();
+ if(!data.user) return;
+ save();
+ $("login").style.display="none";
+ $("app").style.display="block";
+ $("navigation").style.display="flex";
+ renderLists();
+}
+
+function logout(){
+ $("app").style.display="none";
+ $("navigation").style.display="none";
+ $("login").style.display="block";
+}
+
+function showPage(id,btn){
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+ $(id).classList.add("active");
+ document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
+ if(btn) btn.classList.add("active");
+ renderLists();
+ window.scrollTo(0,0);
+}
+
+const rules=[
+ {keys:["banana","peel","vegetable","fruit","leftover food","food scrap","eggshell"],cat:"Organic / Wet Waste",bin:"Organic waste collection",tip:"Compost suitable food scraps where facilities are available."},
+ {keys:["battery","laptop","mobile","phone","computer","charger","cable","television","tv","electronic","earphone"],cat:"E-Waste",bin:"Authorized e-waste collection",tip:"Keep electronics and batteries separate. Never put batteries in regular bins."},
+ {keys:["paper","newspaper","cardboard"],cat:"Paper",bin:"Dry recycling bin",tip:"Keep paper clean and dry. Greasy or contaminated paper may not be recyclable."},
+ {keys:["bottle","plastic","wrapper","container"],cat:"Plastic",bin:"Local plastic recycling collection",tip:"Empty and clean recyclable containers; check local acceptance rules."},
+ {keys:["glass","jar"],cat:"Glass",bin:"Glass recycling collection",tip:"Separate glass according to local rules. Handle broken glass carefully."},
+ {keys:["can","metal","aluminium","aluminum","tin"],cat:"Metal",bin:"Metal recycling collection",tip:"Empty containers and use an accepted metal recycling service."},
+ {keys:["medicine","chemical","paint","pesticide","bulb","thermometer"],cat:"Special / Potentially Hazardous Waste",bin:"Authorized special-waste service",tip:"Do not pour chemicals down drains or mix hazardous waste with household waste."}
+];
+
+function classifyWaste(){
+ const name=$("wasteName").value.trim().toLowerCase();
+ if(!name){alert("Please enter a waste item.");return;}
+ let found=rules.find(r=>r.keys.some(k=>name.includes(k)));
+ if(!found) found={cat:"General / Unidentified Waste",bin:"Check local waste guidance",tip:"The demo could not identify this item. Check its label and local disposal instructions."};
+ $("classificationResult").style.display="block";
+ $("classificationResult").innerHTML=
+ "<h3>Suggested category: "+found.cat+"</h3>"+
+ "<b>Disposal:</b> "+found.bin+"<br><b>Advice:</b> "+found.tip+
+ "<br><small>Rule-based demo, not a verified AI prediction.</small>";
+ data.waste.push({name,cat:found.cat,date:new Date().toLocaleDateString()});
+ data.points+=5;
+ save();
+ renderLists();
+}
+
+$("wastePhoto").addEventListener("change",function(){
+ const file=this.files[0];
+ if(!file)return;
+ if(!file.type.startsWith("image/")){alert("Please select an image.");return;}
+ if(file.size>5*1024*1024){alert("Choose an image smaller than 5 MB.");this.value="";return;}
+ const reader=new FileReader();
+ reader.onload=e=>{$("photoPreview").src=e.target.result;$("photoPreview").style.display="block";};
+ reader.readAsDataURL(file);
+});
+
+function addRecord(e,type){
+ e.preventDefault();
+ let r={date:new Date().toLocaleDateString()};
+ if(type==="ewaste"){
+  r.item=$("electronic").value;r.qty=$("eqty").value;
+  r.area=$("earea").value.trim();r.details=$("edetails").value.trim();
+ } else if(type==="food"){
+  r.item=$("foodName").value.trim();r.qty=$("foodQty").value;
+  r.area=$("foodArea").value.trim();r.until=$("foodDate").value;
+  if(r.until<new Date().toLocaleDateString("en-CA")){alert("Please select today or a future date.");return;}
+ } else {
+  r.item=$("itemName").value.trim();r.condition=$("condition").value;
+  r.offer=$("offer").value;r.area=$("itemArea").value.trim();
+ }
+ data[type].push(r);
+ data.points+=10;
+ save();
+ e.target.reset();
+ renderLists();
+ alert("Demo record added successfully!");
+}
+
+function render(id,items,formatter){
+ $(id).innerHTML=items.length?items.slice().reverse().map(formatter).join(""):"No records yet.";
+}
+
+function safe(s){
+ return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+function renderLists(){
+ render("ewasteList",data.ewaste,r=>`<div class="list-item"><b>${safe(r.item)}</b> × ${safe(r.qty)}<br>Area: ${safe(r.area)}<br><span class="badge">Demo request — not booked</span></div>`);
+ render("foodList",data.food,r=>`<div class="list-item"><b>${safe(r.item)}</b><br>Servings: ${safe(r.qty)} · Area: ${safe(r.area)}<br>Use by: ${safe(r.until)}<br><span class="badge">Demo listing — not verified</span></div>`);
+ render("reuseList",data.reuse,r=>`<div class="list-item"><b>${safe(r.item)}</b><br>${safe(r.condition)} · ${safe(r.offer)}<br>Area: ${safe(r.area)}<br><span class="badge">Community demo listing</span></div>`);
+ updateDashboard();
+}
+
+function updateDashboard(){
+ const total=data.waste.length+data.ewaste.length+data.food.length+data.reuse.length;
+ $("total").textContent=total;
+ $("points").textContent=data.points;
+ $("requests").textContent=data.ewaste.length;
+ $("impactTotal").textContent=total;
+ $("impactPoints").textContent=data.points;
+ $("impactReuse").textContent=data.reuse.length;
+ $("impactFood").textContent=data.food.length;
+}
+
+load();
+if(data.user){
+ $("username").value=data.user;
+}
+</script>
+</body>
+</html>
